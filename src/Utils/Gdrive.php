@@ -53,12 +53,31 @@ class Gdrive
             return $client;
     }
   
-    public function expandHomeDirectory($path)
+    public static function expandHomeDirectory($path)
     {
         $homeDirectory = getenv('HOME');
         if (empty($homeDirectory)) {
             $homeDirectory = getenv('HOMEDRIVE') . getenv('HOMEPATH');
         }
         return str_replace('~', realpath($homeDirectory), $path);
+    }
+
+    public function listFilesInFolder($service, $folderId)
+    {
+        $pageToken = null;
+        //   do {
+            $response = $service->files->listFiles(
+                array(
+                    'q' => "'".$folderId."' in parents",
+                    'spaces' => 'drive',
+                    'pageToken' => $pageToken,
+                    'fields' => 'nextPageToken, files(id, name)'
+                    )
+                );
+            //   foreach ($response->files as $file) {
+            //           printf("Found file: %s (%s)\n", $file->name, $file->id);
+            //   }
+        //   } while ($pageToken != null);
+        return $response->files;
     }
 }

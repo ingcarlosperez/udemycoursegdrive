@@ -141,7 +141,7 @@ class Gdrive
         if (!is_dir($_SERVER['DOCUMENT_ROOT'].'/uploads/files/'.date("Y")."/".date("m")."/")) {
             mkdir($_SERVER['DOCUMENT_ROOT'].'/uploads/files/'.date("Y")."/".date("m")."/", 0777, true);
         }
-        file_put_contents(dirname(__FILE__).'/../../../../../web/uploads/files/'.$fileroute, $content);
+        file_put_contents($_SERVER['DOCUMENT_ROOT'].'/uploads/files/'.$fileroute, $content);
         $datafile=array("filename"=>$fileMetada["name"],"routefile" => $fileroute);
         return $datafile;
     }

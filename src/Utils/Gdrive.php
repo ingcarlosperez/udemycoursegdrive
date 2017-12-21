@@ -128,4 +128,33 @@ class Gdrive
             }
         } while ($pageToken != null);
     }
+
+    //Save files locally
+    public static function saveFile($client,$service, $fileId)
+    {
+        $optParams = array("spaces"=>"drive");
+        $fileMetada = $service->files->get($fileId);
+        $file = $service->files->get($fileId, array(
+        'alt' => 'media' ));
+        $content = $file->getBody()->getContents();
+        $fileroute=date("Y")."/".date("m")."/".$fileMetada["name"];
+        if (!is_dir($_SERVER['DOCUMENT_ROOT'].'/uploads/files/'.date("Y")."/".date("m")."/")) {
+            mkdir($_SERVER['DOCUMENT_ROOT'].'/uploads/files/'.date("Y")."/".date("m")."/", 0777, true);
+        }
+        file_put_contents(dirname(__FILE__).'/../../../../../web/uploads/files/'.$fileroute, $content);
+        $datafile=array("filename"=>$fileMetada["name"],"routefile" => $fileroute);
+        return $datafile;
+    }
+
+    public static function moveFile($client,$service, $folderBackupId, $fileId){
+        $emptyFileMetadata = new \Google_Service_Drive_DriveFile();
+        // Retrieve the existing parents to remove
+        $file = $service->files->get($fileId, array('fields' => 'parents'));
+       // $previousParents = join(',', $file->parents);
+        // Move the file to the new folder
+        $file = $service->files->update($fileId, $emptyFileMetadata, array(
+            'addParents' => $folderBackupId,
+            'removeParents' => $file->parents,
+            'fields' => 'id, parents'));
+    }
 }

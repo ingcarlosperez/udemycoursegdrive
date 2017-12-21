@@ -18,6 +18,8 @@ class AdminGdriveController extends Controller
     {
         $optParams = array("spaces"=>"drive");
         $folderScannedFilesId = "12wUPUA2TBNS-vg4Bm7UpesYkW874RV8_";
+        $folderBackupId = '1sFb52uEv6PFG7nauOXF_lMrNsfrPSFRx';
+        
         $client = new Gdrive();
         $scannerClient=$client->getClient();
 
@@ -40,25 +42,35 @@ class AdminGdriveController extends Controller
         foreach($files as $file){
             $fileinfo=explode(".",$file->name);
             $datafile=explode("_",$fileinfo[0]);
-                    $person = $this->getDoctrine()
+            if(isset($datafile[1])){
+                $person = $this->getDoctrine()
                     ->getRepository(Person::class)
                     ->findByNroid($datafile[1]);
+            }
 
-                if($person&&self::validateDate($datafile[0])){
-                    $filestoprocess[]=$file->id;
-                    $responsefile = "Ok";
-                }else{
-                    $validfile = false;
-                    if(!$person) $responsefile .="Person doesn't exist";
-                    if(!self::validateDate($datafile[0])) $responsefile .=" Invalid date";
+            if(isset($person)&&self::validateDate($datafile[0])&&isset($datafile[0])){
+                $filestoprocess[]=$file->id;
+                $responsefile = "Ok";
+            }else{
+                $validfile = false;
+                if(!isset($person)) {
+                    $responsefile .="Person doesn't exist";
                 }
-                $resultfilesDataTable['data'][]=array("id"=>$file->id,"filename"=>$file->name,"person"=>self::objectToArray($person),"date"=>$datafile[0], "type"=>$datafile[2],"validfile"=>$validfile, "responsefile"=>$responsefile);
-                $validfile = true;
-                $responsefile="";
-
+                if(!self::validateDate($datafile[0])||!isset($datafile[0])){
+                     $responsefile .=" Invalid date";
+                }
+            }
+            if(isset($person)&&isset($datafile[0])&&isset($fileinfo[1]))
+            {
+                $resultfilesDataTable['data'][]=array("id"=>$file->id,"filename"=>$file->name,"person"=>self::objectToArray($person),"date"=>$datafile[0], "type"=>$fileinfo[1],"validfile"=>$validfile, "responsefile"=>$responsefile);
+            }else{
+                $resultfilesDataTable['data'][]=array("id"=>$file->id,"filename"=>$file->name,"person"=>null,"date"=>null, "type"=>"","validfile"=>$validfile, "responsefile"=>$responsefile);                
+            }
+            $validfile = true;
+            $responsefile="";
         }
 
-        $resultfilesDataTable['filestoprocess'] = json_encode($filestoprocess);
+        $resultfilesDataTable['filestoprocess'] = $filestoprocess;
         $resultfilesDataTable['recordsTotal']=count($resultfilesDataTable['data']);
         $resultfilesDataTable['recordsFiltered']=count($resultfilesDataTable['data']);
 
@@ -69,8 +81,7 @@ class AdminGdriveController extends Controller
             $response = new JsonResponse([]);
         }
         return $response;
-    }
-
+    } 
 
     public static function objectToArray($data)
     {

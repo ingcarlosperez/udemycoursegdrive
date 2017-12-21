@@ -13,7 +13,10 @@ define('SCOPES_ESCANER', implode(' ', array(
 
 class Gdrive
 {
-    public function getClientEscaner()
+    /*
+    * Create a new Google Drive Client.
+    */
+    public function getClient()
     {
         $client = new \Google_Client();
         $client->setApplicationName(APPLICATION_NAME_ESCANER);
@@ -52,7 +55,9 @@ class Gdrive
         }
             return $client;
     }
-  
+    /*
+    * Open Google Drive home directory
+    */
     public static function expandHomeDirectory($path)
     {
         $homeDirectory = getenv('HOME');
@@ -62,6 +67,9 @@ class Gdrive
         return str_replace('~', realpath($homeDirectory), $path);
     }
 
+    /*
+    * List elements contained in specific folder
+    */
     public function listFilesInFolder($service, $folderId)
     {
         $pageToken = null;
@@ -79,5 +87,45 @@ class Gdrive
             //   }
         //   } while ($pageToken != null);
         return $response->files;
+    }
+
+    /*
+    * Download a specific file 
+    */
+    //Descargar archivo
+    function downloadFile($service, $fileId)
+    {
+        $fileMetada = $service->files->get($fileId);
+        $file = $service->files->get($fileId, array('alt' => 'media' ));
+        $content = $file->getBody()->getContents();
+        $data = base64_decode($content);
+        
+        header("Cache-Control: no-cache private");
+        header("Content-Description: File Transfer");
+        header("Content-disposition: attachment; filename='".$fileMetada["name"]."'");        
+        header("Content-Type: application/octet-stream");
+        header("Content-Transfer-Encoding: binary");
+        header("Pragma: no-cache");
+        header("Expires: 0");
+        echo $content;
+    }
+
+    function searchFiles($service, $folder ="", $nombre_archivo = "")
+    {
+        $pageToken = null;
+        do {
+            $response = $service->files->listFiles(
+                array(
+                   // 'q'=> "mimeType='image/gif' and name contains 'default'",
+                    'q' => "name='$nombre_archivo'",
+                    'spaces' => 'drive',
+                    'pageToken' => $pageToken,
+                    'fields' => 'nextPageToken, files(id, name)'
+                    )
+                );
+            foreach ($response->files as $file) {
+                    printf("Found file: %s (%s)\n", $file->name, $file->id);
+            }
+        } while ($pageToken != null);
     }
 }

@@ -23,7 +23,6 @@ class DocumentController extends Controller
                 ->getRepository(Person::class)
                 ->find(3);
         $document = new Document();
-        $person = new Document();
         $document->setDescription("Test description");
         $document->setName("Test name");
         $document->setPerson($person);

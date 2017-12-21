@@ -8,9 +8,9 @@ use App\Utils\Gdrive;
 class indexController
 {
     /**
-     * @Route("/index")
+     * @Route("/test")
     */
-    public function index()
+    public function test()
     {
         $folderTMPId = "0BxCE9YuyKsNoZXp5Z3BmUk1fazQ";
         $client = new Gdrive();

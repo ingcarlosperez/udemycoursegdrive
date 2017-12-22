@@ -24,3 +24,4 @@
 #exclude vendor
 /vendor/*
 !/vendor/.gitkeep
+/node_modules/

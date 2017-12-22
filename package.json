@@ -1,0 +1,27 @@
+{
+    "name": "admingdrive",
+    "version": "1.0.0",
+    "description": "Source code of Udemy Course Google API for Developers / Master Google Drive API",
+    "main": "index.js",
+    "dependencies": {
+        "bootstrap": "^4.0.0-beta.2",
+        "datatables.net-bs4": "^1.10.16",
+        "jquery": "^3.2.1"
+    },
+    "devDependencies": {
+        "@symfony/webpack-encore": "^0.17.0",
+        "node-sass": "^4.7.2",
+        "sass-loader": "^6.0.6",
+        "webpack-notifier": "^1.5.0"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": "git+https://github.com/ingcarlosperez/udemycoursegdrive.git",
+    "author": "Ing. Carlos Pérez",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/ingcarlosperez/udemycoursegdrive/issues"
+    },
+    "homepage": "https://github.com/ingcarlosperez/udemycoursegdrive#readme"
+}

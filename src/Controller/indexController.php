@@ -4,8 +4,12 @@ namespace App\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Utils\Gdrive;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Asset\PathPackage;
+use Symfony\Component\Asset\Context\RequestStackContext;
 
-class indexController
+
+class indexController extends AbstractController
 {
     /**
      * @Route("/test")
@@ -21,4 +25,12 @@ class indexController
             '<html><body>Lucky number: '.var_dump($files).'</body></html>'
         );
     }
+    /**
+     * @Route("/", name="document")
+     */
+    public function index()
+    {
+        $number= rand(5, 15);
+        return $this->render('Gdrive/index.html.twig');//, ['number' => $number,]
+    }    
 }

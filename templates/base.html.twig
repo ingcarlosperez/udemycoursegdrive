@@ -4,12 +4,51 @@
 
 <head>
     <!-- ... -->
-    <link rel="stylesheet" href="{{ asset('build/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('build/global.css') }}">
+    <title>Admin GDrive</title>
 </head>
 
 <body>
-    <!-- ... -->
+    <header>
+        <!-- Fixed navbar -->
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+            <a class="navbar-brand" href="#"><i class="fab fa-google-drive"></i> Admin GDrive</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Admin Files</a>
+                    </li>
+                </ul>
+                <ul class="nav nav-pills float-right">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Begin page content -->
+    <main role="main" class="container">
+        {#
+        <div class="mt-3">
+            <h1>Sticky footer with fixed navbar</h1>
+        </div> #}
+        <p>
+            {% block body %}{% endblock %}
+        </p>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <span class="text-muted">Example development by Ing. Carlos Pérez.</span>
+        </div>
+    </footer>
     <script src="{{ asset('build/app.js') }}"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.2/js/all.js"></script>
 </body>
 
 </html>

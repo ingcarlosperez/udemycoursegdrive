@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %} {% block body %}
+<strong>Note:</strong>The only files that will be processed are that your state are <strong>"Ok"</strong>. For the files colored in <strong style="border-radius: 5px; color: #ffffff; background-color: #F96767; padding: 4px; padding-bottom: 2px">RED</strong>,
+check the state and proceed to fix the file name structure.</div>
+</div>
+<h1>Import files from Google Drive</h1>
+<hr />
+<button type="button" class="btn btn-success" id="loadfilesfromgdrive"><i class="fa fa-download" aria-hidden="true"></i> Load files</button>
+<!-- <button type="button" class="btn btn-default pull-right disabled" id="processfilesfromgdrive"><i class="fa fa-cog" aria-hidden="true"></i> Procesar archivos escaneados</button> -->
+
+<table class="table" id="tablefilesgdrive">
+    <thead>
+        <tr>
+            <th>Filename</th>
+            <th>Date (YYYY-mm-dd)</th>
+            <th>Person</th>
+            <th>Type</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+    <!-- <tfoot>
+        <tr>
+            <th>Nombre archivo</th>
+            <th>Fecha (Año-mes-día)</th>
+            <th>Cliente</th>
+            <th>Tipo</th>
+            <th>Estado</th>
+        </tr>
+    </tfoot> -->
+</table>
+{% endblock %}

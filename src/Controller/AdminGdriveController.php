@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Request;
 
 class AdminGdriveController extends Controller
 {
@@ -17,6 +18,7 @@ class AdminGdriveController extends Controller
      */
     public function getFilesToProcess()
     {
+        $request = Request::createFromGlobals();
         $optParams = array("spaces"=>"drive");
         $folderScannedFilesId = "12wUPUA2TBNS-vg4Bm7UpesYkW874RV8_";        
         
@@ -32,7 +34,7 @@ class AdminGdriveController extends Controller
         $validfile = true;
 
        // $draw = $request->getParameter('draw');
-        $resultfilesDataTable['draw'] = 1;//$draw
+        $resultfilesDataTable['draw'] = $request->query->get('draw');//$draw
         $resultfilesDataTable['recordsTotal'] = '';
         $resultfilesDataTable['recordsFiltered'] = '';
         $resultfilesDataTable['data'] = array();    

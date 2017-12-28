@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 
+
 class AdminGdriveController extends Controller
 {
     /**
@@ -38,16 +39,17 @@ class AdminGdriveController extends Controller
         $resultfilesDataTable['recordsTotal'] = '';
         $resultfilesDataTable['recordsFiltered'] = '';
         $resultfilesDataTable['data'] = array();    
-        $responsefile = "";
-        $datafile = array();
-
+        
         foreach($files as $file){
+            if(isset($person))unset($person);
+            $responsefile = "";
+            $datafile = array();
             $fileinfo=explode(".",$file->name);
             $datafile=explode("_",$fileinfo[0]);
             if(isset($datafile[1])){
                 $person = $this->getDoctrine()
                     ->getRepository(Person::class)
-                    ->findByNroid($datafile[1]);
+                    ->findOneByNroid($datafile[1]);
             }
 
             if(isset($person)&&self::validateDate($datafile[0])&&isset($datafile[0])){
@@ -64,7 +66,8 @@ class AdminGdriveController extends Controller
             }
             if(isset($person)&&isset($datafile[0])&&isset($fileinfo[1]))
             {
-                $resultfilesDataTable['data'][]=array("id"=>$file->id,"filename"=>$file->name,"person"=>self::objectToArray($person),"date"=>$datafile[0], "type"=>$fileinfo[1],"validfile"=>$validfile, "responsefile"=>$responsefile);
+                $personData=array("nroid"=>$person->getNroid(), "firstname"=>$person->getFirstname(),"middlename"=>$person->getMiddlename(),"lastname"=>$person->getLastname());
+                $resultfilesDataTable['data'][]=array("id"=>$file->id,"filename"=>$file->name,"person"=>$personData,"date"=>$datafile[0], "type"=>$fileinfo[1],"validfile"=>$validfile, "responsefile"=>$responsefile);
             }else{
                 $resultfilesDataTable['data'][]=array("id"=>$file->id,"filename"=>$file->name,"person"=>null,"date"=>null, "type"=>null,"validfile"=>$validfile, "responsefile"=>$responsefile);                
             }
@@ -90,13 +93,14 @@ class AdminGdriveController extends Controller
     */
     public function processFilesFromGdrive()
     {
+        $request = Request::createFromGlobals();
         $em = $this->getDoctrine()->getManager();
         $folderBackupId = '1sFb52uEv6PFG7nauOXF_lMrNsfrPSFRx';
         $client = new Gdrive();
         $scannerClient=$client->getClient();
         $service = new \Google_Service_Drive($scannerClient);
         // $filestoprocess=$request->getParameter('filestoprocess');
-        $filestoprocess=array("1C7r6tG5gm18j47kIilzK3rKfj2r_kpM-");
+        $filestoprocess=explode(",",$request->query->get('filestoprocess'));
        // $filestoprocessdecode=json_decode($filestoprocess);
         foreach($filestoprocess as $filetoprocess){
             //Copy file to local server
@@ -116,28 +120,43 @@ class AdminGdriveController extends Controller
             $em->persist($document);
             $em->flush();        
         }
-        return new JsonResponse(array("message"=> "Ok"));
+        return new JsonResponse(array("response"=> "Ok"));
     }   
-
-    public static function objectToArray($data)
-    {
-        if(is_array($data) || is_object($data))
-        {
-            $result = array();
-    
-            foreach($data as $key => $value) {
-                $result[$key] = self::objectToArray($value);
-            }
-    
-            return $result;
-        }
-    
-        return $data;
-    }
 
   public static function validateDate($date, $format = 'Y-m-d')
     {
         $d = \DateTime::createFromFormat($format, $date);
         return $d && $d->format($format) == $date;
+    }
+
+        /**
+     * @Route("/listprocessedfiles", name="get_files_process")
+     */
+    public function listProcessedFiles()
+    {
+        $request = Request::createFromGlobals();
+        $resultProcessedFiles['draw'] = $request->query->get('draw');//$draw
+        $resultProcessedFiles['recordsTotal'] = '';
+        $resultProcessedFiles['recordsFiltered'] = '';
+        $resultProcessedFiles['data'] = array();    
+        //consulta sql
+        $documents = $this->getDoctrine()
+                    ->getRepository(Document::class)
+                    ->findAll();
+
+        //recorrer resultados
+        foreach($documents as $document){
+
+            $resultProcessedFiles['data'][]=array("person"=>$document->getPerson()->getFirstname(),"description"=>$document->getDescription(),"filename"=>$document->getName(),"fileid"=>$document->getFileid());
+        }
+        $resultProcessedFiles['recordsTotal']=count($resultProcessedFiles['data']);
+        $resultProcessedFiles['recordsFiltered']=count($resultProcessedFiles['data']);
+
+        if ($resultProcessedFiles != false) {
+            $response = new JsonResponse($resultProcessedFiles);            
+        }else{
+            $response = new JsonResponse([]);
+        }
+        return $response;
     }
 }

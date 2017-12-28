@@ -26,11 +26,20 @@ class indexController extends AbstractController
         );
     }
     /**
-     * @Route("/", name="document")
+     * @Route("/", name="processfiles")
      */
     public function index()
     {
         $number= rand(5, 15);
         return $this->render('Gdrive/index.html.twig');//, ['number' => $number,]
+    }    
+
+    /**
+     * @Route("/checkfiles", name="checkfiles")
+     */
+    public function checkFiles()
+    {
+        $number= rand(5, 15);
+        return $this->render('Gdrive/checkfiles.html.twig');//, ['number' => $number,]
     }    
 }

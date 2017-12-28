@@ -1,11 +1,9 @@
 {% extends 'base.html.twig' %} {% block body %}
 <strong>Note:</strong>The only files that will be processed are that your state are <strong>"Ok"</strong>. For the files colored in <strong style="border-radius: 5px; color: #ffffff; background-color: #F96767; padding: 4px; padding-bottom: 2px">RED</strong>,
-check the state and proceed to fix the file name structure.</div>
-</div>
+check the state and proceed to fix the file name structure.
 <h1>Import files from Google Drive</h1>
-<hr />
-<button type="button" class="btn btn-success" id="loadfilesfromgdrive"><i class="fa fa-download" aria-hidden="true"></i> Load files</button>
-<!-- <button type="button" class="btn btn-default pull-right disabled" id="processfilesfromgdrive"><i class="fa fa-cog" aria-hidden="true"></i> Procesar archivos escaneados</button> -->
+<button type="button" class="btn btn-success" id="loadfilesfromgdrive"><i id="download-icon" class="fa fa-download" aria-hidden="true"></i><i id="time-icon" class="far fa-clock d-none fa-spin"></i> Load files</button>
+<button type="button" class="btn btn-default float-right disabled" id="processfilesfromgdrive" disabled="disabled"><i class="fa fa-cog" aria-hidden="true"></i> Process files</button>
 
 <table class="table" id="tablefilesgdrive">
     <thead>
@@ -19,14 +17,20 @@ check the state and proceed to fix the file name structure.</div>
     </thead>
     <tbody>
     </tbody>
-    <!-- <tfoot>
-        <tr>
-            <th>Nombre archivo</th>
-            <th>Fecha (Año-mes-día)</th>
-            <th>Cliente</th>
-            <th>Tipo</th>
-            <th>Estado</th>
-        </tr>
-    </tfoot> -->
 </table>
+<div class="modal fade" tabindex="-1" role="dialog" id="modalprocessfiles">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><strong>Processing Google Drive files...</strong></h4>
+            </div>
+            <div class="modal-body">
+                <p id="modalmessage" style="font-size:16px"><i class="fa fa-spinner fa-pulse fa-fw"></i> Un moment please. Your files are processing</p>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
 {% endblock %}

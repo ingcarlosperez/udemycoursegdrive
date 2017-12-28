@@ -8,7 +8,7 @@ html {
 
 body {
     /* Margin bottom by footer height */
-    margin-bottom: 60px;
+    margin-top: 30px;
 }
 
 .footer {
@@ -40,4 +40,9 @@ body>.container {
 
 code {
     font-size: 80%;
+}
+
+table.dataTable tbody tr.selected {
+    background-color: #F96767;
+    color: #ffffff;
 }

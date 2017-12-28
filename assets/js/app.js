@@ -55,12 +55,19 @@ $(document).ready(function() {
                 $("#processfilesfromgdrive").removeClass("disabled");
                 $("#processfilesfromgdrive").removeClass("btn-default");
                 $("#processfilesfromgdrive").addClass("btn-success");
+                $("#time-icon").addClass("d-none");
+                $("#download-icon").removeClass("d-none");
+                $('#processfilesfromgdrive').removeAttr("disabled");
             }
         }
     });
 
     function loadFilesFromGdrive() {
+
+        $("#time-icon").removeClass("d-none");
+        $("#download-icon").addClass("d-none");
         $("#processfilesfromgdrive").addClass("disabled");
+        $('#processfilesfromgdrive').attr("disabled");
         $("#processfilesfromgdrive").removeClass("btn-success");
         $("#processfilesfromgdrive").addClass("btn-default");
         tablefilesgdrive.ajax.reload(null, false);
@@ -76,24 +83,68 @@ $(document).ready(function() {
             timeout: 20000,
             contentType: "application/json", //tell the server we're looking for json
             error: function() {
-                console.error('Error al tratar de procesar archivos RIPS.');
+                console.log('Error. Unable to process Google Drive files.');
             },
             beforeSend: function() {
-                $('#modalcargaarchivos').modal('show');
+                $('#modalprocessfiles').modal('show');
             },
             success: function(data) {
                 if (data.response === "Ok") {
-                    $("#mensajemodal").html('<i class="fa fa-check" aria-hidden="true"></i> Archivos procesados correctamente!');
+                    $("#mensajemodal").html('<i class="fa fa-check" aria-hidden="true"></i> Google Drive files were processed successful!');
                     setTimeout(function() {
-                        $('#modalcargaarchivos').modal('hide');
+                        $('#modalprocessfiles').modal('hide');
                         tablefilesgdrive.ajax.reload(null, false);
                     }, 2000);
-                    $("#mensajemodal").html('<i class="fa fa-spinner fa-pulse fa-fw"></i> Un momento por favor. Se estan procesando los archivos válidos');
+                    $("#modalmessage").html('<i class="fa fa-spinner fa-pulse fa-fw"></i> One moment please. Google Drive files are processing');
                 } else {
-                    console.log("Archivos no procesados");
+                    console.log("Unable to process Google Drive files");
                 }
             }
         });
 
     }
+
+    var tablefilesprocessed = $('#tableprocessedfiles').DataTable({
+        "paging": false,
+        "searching": false,
+        "ordering": false,
+        "info": false,
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+            url: "listprocessedfiles"
+        },
+        // language: {
+        //     url: '/js/frontend/agenda/lang/Spanish.json',
+        // },
+        "columnDefs": [{
+                "targets": 0,
+                "data": "person",
+                "render": function(data, type, row, meta) {
+                    if (row.person)
+                        return row.person.firstname;
+                    else return "";
+                }
+            },
+            { "targets": 1, "data": "description" },
+            { "targets": 2, "data": "filename" },
+            { "targets": 3, "data": "fileid" },
+        ],
+        "rowCallback": function(row, data) {
+            if (!data.validfile) {
+                $(row).addClass('selected');
+            }
+        },
+        "drawCallback": function(settings) {
+            if (settings.json !== undefined) {
+                localStorage.setItem("filestoprocess", settings.json.filestoprocess);
+                $("#processfilesfromgdrive").removeClass("disabled");
+                $("#processfilesfromgdrive").removeClass("btn-default");
+                $("#processfilesfromgdrive").addClass("btn-success");
+                $("#time-icon").addClass("d-none");
+                $("#download-icon").removeClass("d-none");
+                $('#processfilesfromgdrive').removeAttr("disabled");
+            }
+        }
+    });
 });

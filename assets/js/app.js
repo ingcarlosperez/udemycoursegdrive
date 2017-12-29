@@ -104,7 +104,7 @@ $(document).ready(function() {
 
     }
 
-    var tablefilesprocessed = $('#tableprocessedfiles').DataTable({
+    var tableprocessedfiles = $('#tableprocessedfiles').DataTable({
         "paging": false,
         "searching": false,
         "ordering": false,
@@ -119,7 +119,7 @@ $(document).ready(function() {
         // },
         "columnDefs": [{
                 "targets": 0,
-                "data": "person",
+                "data": null,
                 "render": function(data, type, row, meta) {
                     if (row.person)
                         return row.person.firstname;

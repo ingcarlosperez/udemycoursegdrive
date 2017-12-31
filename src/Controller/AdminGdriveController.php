@@ -130,7 +130,7 @@ class AdminGdriveController extends Controller
     }
 
         /**
-     * @Route("/listprocessedfiles", name="get_files_process")
+     * @Route("/listprocessedfiles", name="list_processed_files")
      */
     public function listProcessedFiles()
     {

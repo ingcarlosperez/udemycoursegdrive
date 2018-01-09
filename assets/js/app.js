@@ -135,6 +135,15 @@ $(document).ready(function() {
                         return '<a href="/downloadfilefromgdrive?fileid=' + row.fileid + '" target="_blank">Download</a>';
                     else return "";
                 }
+            },
+            {
+                "targets": 3,
+                "data": null,
+                "render": function(data, type, row, meta) {
+                    if (row.filename)
+                        return '<a href="/uploads/files/' + row.filename + '" target="_blank">Download</a>';
+                    else return "";
+                }
             }
         ],
         "rowCallback": function(row, data) {},
@@ -150,4 +159,4 @@ $(document).ready(function() {
             }
         }
     });
-});
+})

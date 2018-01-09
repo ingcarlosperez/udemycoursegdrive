@@ -130,7 +130,7 @@ class AdminGdriveController extends Controller
     }
 
         /**
-     * @Route("/listprocessedfiles", name="get_files_process")
+     * @Route("/listprocessedfiles", name="list_processed_files")
      */
     public function listProcessedFiles()
     {
@@ -146,8 +146,8 @@ class AdminGdriveController extends Controller
 
         //recorrer resultados
         foreach($documents as $document){
-
-            $resultProcessedFiles['data'][]=array("person"=>$document->getPerson()->getFirstname(),"description"=>$document->getDescription(),"filename"=>$document->getName(),"fileid"=>$document->getFileid());
+            $personName=$document->getPerson()->getFirstname()." ".$document->getPerson()->getMiddlename()." ".$document->getPerson()->getlastname();
+            $resultProcessedFiles['data'][]=array("person_name"=>$personName,"description"=>$document->getDescription(),"filename"=>$document->getName(),"fileid"=>$document->getFileid());
         }
         $resultProcessedFiles['recordsTotal']=count($resultProcessedFiles['data']);
         $resultProcessedFiles['recordsFiltered']=count($resultProcessedFiles['data']);
@@ -158,5 +158,18 @@ class AdminGdriveController extends Controller
             $response = new JsonResponse([]);
         }
         return $response;
+    }
+
+
+    /**
+     * @Route("/downloadfilefromgdrive", name="download_file_from_gdrive")
+    */
+    public function downloadFileFromGdrive()
+    {
+        $request = Request::createFromGlobals();
+        $client = new Gdrive();
+        $scannerClient=$client->getClient();
+        $service = new \Google_Service_Drive($scannerClient);
+        $client->downloadFile($service, $request->query->get('fileid'));
     }
 }

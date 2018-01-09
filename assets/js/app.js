@@ -34,7 +34,7 @@ $(document).ready(function() {
             { "targets": 1, "data": "date" },
             {
                 "targets": 2,
-                "data": "description",
+                "data": null,
                 "render": function(data, type, row, meta) {
                     if (row.person)
                         return row.person.firstname + " " + row.person.middlename + " " + row.person.lastname;
@@ -121,20 +121,23 @@ $(document).ready(function() {
                 "targets": 0,
                 "data": null,
                 "render": function(data, type, row, meta) {
-                    if (row.person)
-                        return row.person.firstname;
+                    if (row.person_name)
+                        return row.person_name;
                     else return "";
                 }
             },
             { "targets": 1, "data": "description" },
-            { "targets": 2, "data": "filename" },
-            { "targets": 3, "data": "fileid" },
-        ],
-        "rowCallback": function(row, data) {
-            if (!data.validfile) {
-                $(row).addClass('selected');
+            {
+                "targets": 2,
+                "data": null,
+                "render": function(data, type, row, meta) {
+                    if (row.fileid)
+                        return '<a href="/downloadfilefromgdrive?fileid=' + row.fileid + '" target="_blank">Download</a>';
+                    else return "";
+                }
             }
-        },
+        ],
+        "rowCallback": function(row, data) {},
         "drawCallback": function(settings) {
             if (settings.json !== undefined) {
                 localStorage.setItem("filestoprocess", settings.json.filestoprocess);

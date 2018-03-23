@@ -27,6 +27,6 @@ class CreateGdriveCredentialsCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $client = new Gdrive();
-        $client->getClientEscaner();
+        $client->getClient();
     }
 }
